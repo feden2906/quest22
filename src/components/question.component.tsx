@@ -2,26 +2,33 @@ import { useEffect } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { IQuestion } from '../types/question.interface';
 import { createName } from '../utils/ansvers.random';
-import QuestionService from "../services/question.service";
+// import QuestionService from "../services/question.service";
 // import cryptoRandomString from 'crypto-random-string';
 
 const QuestionComp = () => {
 
     const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm<IQuestion>({ mode: 'onChange' })
-    const onSubmit: SubmitHandler<IQuestion> = async (data) => {
-        const j = await QuestionService.create(data)
-        console.log(j)
-        reset()
+    const onSubmit: SubmitHandler<IQuestion> = (data) => {
+        console.log(data)
+        fetch('https://server-question.herokuapp.com/main-api/forms', {
+            method: 'POST', body: JSON.stringify(data),
+            headers: {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': 'Origin'
+            }
+        })
+            .then(v => v.json())
+            .then(v => console.log(v))
+        // const j = await QuestionService.create(data)
+        // console.log(j)
+        // reset()
     }
 
     // @ts-ignore
-    useEffect( () => {
-        (async () => {
-            const j = await QuestionService.getAll()
-            console.log(j)
-        })()
-
-    }, [])
+    // useEffect( () => {
+    //     fetch('https://server-question.herokuapp.com/main-api/forms').then(v => console.log(v))
+    //
+    // })
 
     return (
         <div style={{maxWidth: '200px'}}>
